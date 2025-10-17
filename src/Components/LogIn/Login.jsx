@@ -1,15 +1,17 @@
 import { sendPasswordResetEmail} from "firebase/auth";
 
 import React, { use, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { auth } from "../../Firebase/firebase.init";
 import { AuthContext } from "../../Context/AuthContext/AuthContext";
 import { EmailAuthProvider } from "firebase/auth/web-extension";
 
 const Login = () => {
-  const {signInUser,user} = use(AuthContext)
+  const {signInUser } = use(AuthContext)
   // console.log(signInUser);
   // console.log(user);
+  const location = useLocation()
+  const navigate = useNavigate();
   
   
   const emailRef = useRef();
@@ -22,10 +24,9 @@ const Login = () => {
     // console.log(pass);
     signInUser(email, pass)
       .then((result) => {
+        e.target.reset();
         console.log(result.user);
-        if (!result.user.emailVerified) {
-          alert("Please verify you account");
-        }
+        navigate(location.state || '/')
       })
       .catch((err) => {
         console.log(err.message);

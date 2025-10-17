@@ -4,30 +4,32 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndP
 import { auth } from '../../Firebase/firebase.init';
 
 const AuthProvider = ({children}) => {
-    const [user,setUser] = useState(null)
+    const [user,setUser] = useState(null);
+    const [loading,setLoading] = useState(true);
     const createUser = (email,password) =>{
+        setLoading(true);
         return createUserWithEmailAndPassword(auth,email,password)
     }
     const signInUser = (email,password) =>{
-        console.log(email);
-        console.log(password);
-        
+         setLoading(true);
         
         return signInWithEmailAndPassword(auth,email,password)
     }
    const signOutUser = () =>{
+     setLoading(true);
     return signOut(auth)
    }
     // get current user info
     useEffect(()=>{
-         const unsubcribe = onAuthStateChanged(auth,(currentUser)=>{
+         const unsubscribe = onAuthStateChanged(auth,(currentUser)=>{
          setUser(currentUser);
+          setLoading(false);
 
     })
 
     // Clear the observer on unmount
     return () =>{
-        unsubcribe();
+        unsubscribe();
     }
     },[])
 
@@ -37,6 +39,7 @@ const AuthProvider = ({children}) => {
         createUser,
         signInUser,
         signOutUser,
+        loading,
     }
 
     return (
